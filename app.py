@@ -15,7 +15,7 @@ app = Flask(__name__)
 
 # Load API keys from environment variables
 NEWS_API_KEY = os.environ.get("NEWS_API_KEY")   # Get this from https://newsapi.org/
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")  #Get this from https://aistudio.google.com/apikey
 
 # Gemini client
 client = genai.Client(api_key=GEMINI_API_KEY)
@@ -41,11 +41,7 @@ def simplify_text(article_text):
             ],
         ),
     ]
-
-    # No need for extra tools in this case
     generate_content_config = types.GenerateContentConfig()
-
-    # Stream the response from Gemini
     simplified_text = ""
     for chunk in client.models.generate_content_stream(
         model=model,
@@ -56,13 +52,11 @@ def simplify_text(article_text):
 
     return simplified_text.strip()
 
-# Route: Homepage
 @app.route("/")
 def home():
     articles = fetch_news()
     return render_template("index.html", articles=articles)
 
-# Route: Simplify endpoint (AJAX call)
 @app.route("/simplify", methods=["POST"])
 def simplify():
     data = request.json
