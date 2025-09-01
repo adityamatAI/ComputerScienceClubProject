@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI News Simplifier</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>📰 AI News Simplifier</h1>
+    <p>Get today's headlines and click "Simplify" for an AI-generated summary.</p>
+
+    <div class="news-container">
+        {% for article in articles %}
+        <div class="news-card">
+            <h2>{{ article.title }}</h2>
+            {% if article.urlToImage %}
+            <img src="{{ article.urlToImage }}" alt="news image">
+            {% endif %}
+            <p>{{ article.description }}</p>
+            <button onclick="simplifyNews('{{ article.description|escape }}', this)">Simplify</button>
+            <p class="summary"></p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <script>
+        // Function to call backend for simplification
+        async function simplifyNews(content, button) {
+            button.disabled = true;
+            button.innerText = "Simplifying...";
+            let response = await fetch("/simplify", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({content: content})
+            });
+            let data = await response.json();
+            button.nextElementSibling.innerText = data.summary;
+            button.innerText = "Simplify";
+            button.disabled = false;
+        }
+    </script>
+</body>
+</html>
