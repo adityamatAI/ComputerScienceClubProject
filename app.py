@@ -2,7 +2,7 @@
 # --------------------------
 # A simple Flask app that fetches today's news from NewsAPI
 # and uses Gemini API to simplify article summaries.
-# --------------------------
+# --------------------------njbv
 
 from flask import Flask, render_template, request, jsonify
 import requests
